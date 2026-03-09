@@ -8,12 +8,15 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\Server;
+use pocketmine\utils\Config;
+
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\player\PlayerItemPickupEvent;
+use pocketmine\event\entity\EntityItemPickupEvent;
+
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+
 use pocketmine\event\inventory\InventoryOpenEvent;
-use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener {
 
@@ -41,8 +44,8 @@ class Main extends PluginBase implements Listener {
                 }
             }
 
-            $player->setSilent(true);
             $player->setInvisible(true);
+            $player->setSilent(true);
 
         }else{
 
@@ -52,19 +55,14 @@ class Main extends PluginBase implements Listener {
                 $p->showPlayer($player);
             }
 
-            $player->setSilent(false);
             $player->setInvisible(false);
+            $player->setSilent(false);
         }
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
 
         if(!$sender instanceof Player){
-            return true;
-        }
-
-        if(!$sender->hasPermission("vanish.use")){
-            $sender->sendMessage($this->config->getNested("messages.no-permission"));
             return true;
         }
 
@@ -104,17 +102,16 @@ class Main extends PluginBase implements Listener {
 
         $entity = $event->getEntity();
 
-        if($entity instanceof Player){
-
-            if($this->isVanished($entity)){
-                $event->cancel();
-            }
+        if($entity instanceof Player && $this->isVanished($entity)){
+            $event->cancel();
         }
     }
 
-    public function onPickup(PlayerItemPickupEvent $event): void {
+    public function onPickup(EntityItemPickupEvent $event): void {
 
-        if($this->isVanished($event->getPlayer())){
+        $entity = $event->getEntity();
+
+        if($entity instanceof Player && $this->isVanished($entity)){
             $event->cancel();
         }
     }
