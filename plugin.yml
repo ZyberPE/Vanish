@@ -1,0 +1,19 @@
+name: Vanish
+main: ZyberPE\Vanish\Main
+version: 1.0.0
+api: 5.0.0
+author: ZyberPE
+
+commands:
+  vanish:
+    description: Toggle vanish mode
+    usage: "/vanish <on|off>"
+    aliases: [v]
+    permission: vanish.use
+
+permissions:
+  vanish.use:
+    default: op
+
+  vanish.see:
+    default: op
